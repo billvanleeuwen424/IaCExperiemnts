@@ -27,14 +27,8 @@
       name: "*"
       state: latest
 
-  - name: Install Prerequisite Packages
+  - name: Install Desired Packages
     ansible.builtin.dnf:
       name: 
         - firewalld
         - podman
-
-  - name: Get gitlab image
-    containers.podman.podman_container:
-      name: mygitlab
-      image: docker.io/gitlab/gitlab-ce:latest
-      state: started
