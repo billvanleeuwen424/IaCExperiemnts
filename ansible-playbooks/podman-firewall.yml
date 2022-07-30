@@ -1,0 +1,40 @@
+# Authour: Bill Van Leeuwen
+# Purpose: Configure a RHEL server with podman
+# Tasks:
+#
+
+- name: Configure Base image
+  hosts: all
+  become_user: root
+  become: true
+  vars_prompt: 
+    - name: rhel_user
+      prompt: Enter RHEL username.
+    - name: rhel_pass
+      prompt: Enter RHEL password.
+  tasks:
+
+    #TODO: Ansible Vault
+  - name: Register server with Red Hat
+    redhat_subscription:
+      state: present
+      username: "{{ rhel_user }}"
+      password: "{{ rhel_pass }}"
+      auto_attach: true
+
+  - name: Upgrade all packages
+    ansible.builtin.dnf:
+      name: "*"
+      state: latest
+
+  - name: Install Prerequisite Packages
+    ansible.builtin.dnf:
+      name: 
+        - firewalld
+        - podman
+
+  - name: Get gitlab image
+    containers.podman.podman_container:
+      name: mygitlab
+      image: docker.io/gitlab/gitlab-ce:latest
+      state: started

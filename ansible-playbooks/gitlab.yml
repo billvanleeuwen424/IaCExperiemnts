@@ -1,0 +1,16 @@
+# Authour: Bill Van Leeuwen
+# Purpose: Get Gitlab image, configure and start it
+# Tasks:
+#
+
+- name: Gitlab
+  hosts: all
+  become_user: root
+  become: true
+  tasks:
+
+  - name: Get gitlab image
+    containers.podman.podman_container:
+      name: mygitlab
+      image: docker.io/gitlab/gitlab-ce:latest
+      state: started
