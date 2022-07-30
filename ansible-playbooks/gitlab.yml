@@ -1,16 +1,47 @@
 # Authour: Bill Van Leeuwen
 # Purpose: Get Gitlab image, configure and start it
-# Tasks:
-#
 
 - name: Gitlab
   hosts: all
   become_user: root
   become: true
+  vars:
+    gitlab_home: "/srv/gitlab"
   tasks:
 
-  - name: Get gitlab image
+  - name: Create the volume directories
+    ansible.builtin.file:
+      path: "{{ item }}"
+      state: directory
+      mode: '0777'
+      owner: root
+    loop: 
+      - "{{gitlab_home}}/config"
+      - "{{gitlab_home}}/logs"
+      - "{{gitlab_home}}/data"
+
+  - name: Set gitlab configurations file.
+    ansible.builtin.blockinfile:
+      path: "{{gitlab_home}}/config/gitlab.rb"
+      block: | 
+        external_url 'https://ec2-3-82-128-153.compute-1.amazonaws.com'
+        gitlab_rails['initial_root_password'] = '$GITLAB_ROOT_PASSWORD'
+      #TODO: can configure root password here with ansible vault
+      create: yes
+
+  - name: Get and run gitlab image
     containers.podman.podman_container:
-      name: mygitlab
+      name: gitlab
       image: docker.io/gitlab/gitlab-ce:latest
+      restart: yes
+      shm_size: 256m
+      publish: 
+      - 8080:80 
+      - 443:443
+      - 1022:22
+      volume: 
+        - "{{gitlab_home}}/config:/etc/gitlab:Z"
+        - "{{gitlab_home}}/logs:/var/log/gitlab:Z"
+        - "{{gitlab_home}}/data:/var/opt/gitlab:Z"
+  
       state: started
