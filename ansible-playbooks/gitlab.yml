@@ -36,7 +36,7 @@
       restart: yes
       shm_size: 256m
       publish: 
-      - 8080:80 
+      - 80:80 
       - 443:443
       - 1022:22
       volume: 
