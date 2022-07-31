@@ -29,3 +29,8 @@ resource "aws_instance" "app_server" {
 
   key_name = "AWS Key"
 }
+
+resource "aws_eip" "lb" {
+  instance = aws_instance.app_server.id
+  vpc      = true
+}
