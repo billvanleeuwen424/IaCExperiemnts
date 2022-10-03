@@ -23,7 +23,7 @@ data "aws_eip" "my_instance_eip" {
 
 resource "aws_instance" "app_server" {
   ami             = "ami-06640050dc3f556bb" #Red Hat Linux x86
-  instance_type   = "t2.large"
+  instance_type   = "t2.medium"
   security_groups = ["MyGroup"]
   tags = {
     Name = "Gitlab Server"
