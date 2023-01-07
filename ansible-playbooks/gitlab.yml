@@ -28,8 +28,7 @@
       path: "{{gitlab_home}}/config/gitlab.rb"
       block: | 
         external_url '{{domain}}'
-        gitlab_rails['initial_root_password'] = 'CHANGETHISPASSWORD!!!123'
-      #TODO: can configure root password here with ansible vault
+      #TODO: can configure Gitlab root password here with ansible vault
       create: yes
 
   - name: Get and run gitlab image
